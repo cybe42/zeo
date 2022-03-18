@@ -1,0 +1,21 @@
+{
+  "name": "zeo",
+  "version": "1.0.0",
+  "description": "new game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/cybe42/zeo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cybe42/zeo/issues"
+  },
+  "homepage": "https://github.com/cybe42/zeo#readme"
+}
