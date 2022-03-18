@@ -126,6 +126,10 @@ wss.on("connection", function connection(ws) {
     });
     
     ws.on("close", ()=>{
+        broadcast_out({
+            e: events["leave"],
+            d: id
+        });
         delete players[id];
     });
 });
