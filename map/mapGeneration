@@ -1,0 +1,44 @@
+const canvas = document.querySelector('canvas');
+
+const c = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Block{
+  constructor({x,y},{width,height}){
+    this.position = {
+      x,
+      y
+    }
+
+    this.area =  {
+      width,
+      height
+    }
+  }
+
+  draw(){
+    const {position, area} = this;
+    c.fillRect(position.x, position.y, area.width, area.height);
+  }
+}
+
+const map  =[
+  ['X', 'X', 'X'],
+  ['X', '0', '0', 'X'],
+  ['X', 'X', 'X']
+]
+
+map.forEach((layer, i) => {
+  let width = 40;
+  let height = 40;
+  let y = height*i;
+  layer.forEach((axis, i) =>{
+    let x = width*i
+    if(axis === 'X'){
+      const block = new Block({x,y},{width, height});
+      block.draw();
+    }
+  })
+})
