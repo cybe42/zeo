@@ -1,0 +1,47 @@
+function colliderDetector(object1, object2) {
+  if (
+    object1.position.x + object1.area.width > object2.position.x &&
+    object1.position.x < object2.position.x + object2.area.width &&
+    object1.position.y + object1.area.height > object2.position.y &&
+    object1.position.y < object2.position.y + object2.area.height
+  ) {
+    let object1Bottom = object1.position.y + object1.area.height;
+    let object2Bottom = object2.position.y + object2.area.height;
+    let object1Right = object1.position.x + object1.area.width;
+    let object2Right = object2.position.x + object2.area.width;
+
+    let bottomCollusion = object2Bottom - object1.position.y;
+    let topCollusion = object1Bottom - object2.position.y;
+    let leftCollusion = object1Right - object2.position.x;
+    let rightCollusion = object2Right - object1.position.x;
+
+    if (
+      topCollusion < bottomCollusion &&
+      topCollusion < leftCollusion &&
+      topCollusion < rightCollusion
+    ) {
+      return { direction: 'top' };
+    }
+    if (
+      bottomCollusion < topCollusion &&
+      bottomCollusion < leftCollusion &&
+      bottomCollusion < rightCollusion
+    ) {
+      return { direction: 'bottom' };
+    }
+    if (
+      leftCollusion < rightCollusion &&
+      leftCollusion < topCollusion &&
+      leftCollusion < bottomCollusion
+    ) {
+      return { direction: 'left' };
+    }
+    if (
+      rightCollusion < leftCollusion &&
+      rightCollusion < topCollusion &&
+      rightCollusion < bottomCollusion
+    ) {
+      return { direction: 'right' };
+    }
+  }
+}
