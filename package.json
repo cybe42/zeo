@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/cybe42/zeo/issues"
   },
-  "homepage": "https://github.com/cybe42/zeo#readme"
+  "homepage": "https://github.com/cybe42/zeo#readme",
+  "dependencies": {
+    "ws": "^8.5.0"
+  }
 }
