@@ -108,7 +108,6 @@ wss.on("connection", function connection(ws) {
         },tryParse);
         players[id].x = packet.x;
         players[id].y = packet.y;
-        players[id].z = packet.z;
         const action = actions[packet.a];
         console.log("Player "+players[id].name+" action: "+action === undefined ? "unknown action" : action);
         const out_packet = {
