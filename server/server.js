@@ -88,7 +88,6 @@ wss.on("connection", function connection(ws) {
     players[id] = {
         x: 0,
         y: 0,
-        z: 0,
         name: "Unknown"+Math.floor(Math.random()*10000000)
     };
     send({
@@ -105,8 +104,7 @@ wss.on("connection", function connection(ws) {
         const packet = Object.assign({
             a: actions["move"],
             x: 0,
-            y: 0,
-            z: 0
+            y: 0
         },tryParse);
         players[id].x = packet.x;
         players[id].y = packet.y;
@@ -117,8 +115,7 @@ wss.on("connection", function connection(ws) {
             e: events["action"],
             d: {
                 x: packet.x,
-                y: packet.y,
-                z: packet.z
+                y: packet.y
             }
         };
 
