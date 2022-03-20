@@ -48,7 +48,9 @@ function decompress(buf) {
 // Create an online game server
 const wss = new WebSocket.Server({ port: 4685 });
 
-const events = [
+const events_idx = [
+    "get_events_list",
+    "get_actions_list",
     "set_players_list",
     "join",
     "leave",
@@ -56,19 +58,19 @@ const events = [
     "chat"
 ]
 
-let events_idx = {};
-for(let jjj=0;jjj<events.length;jjj++) {
-    events_idx[events[jjj]] = jjj;
+let events = {};
+for(let jjj=0;jjj<events_idx.length;jjj++) {
+    events[events_idx[jjj]] = jjj;
 }
 
 
-const actions = [
+const actions_idx = [
     "move"
 ];
 
-let actions_idx = {};
-for(let jjj=0;jjj<actions.length;jjj++) {
-    actions_idx[actions[jjj]] = jjj;
+let actions = {};
+for(let jjj=0;jjj<actions_idx.length;jjj++) {
+    actions[actions_idx[jjj]] = jjj;
 }
 
 function broadcast(msg) {
@@ -90,6 +92,20 @@ wss.on("connection", function connection(ws) {
         y: 0,
         name: "Unknown"+Math.floor(Math.random()*10000000)
     };
+    send({
+        e: events["get_events_list"],
+        d: {
+            events,
+            events_idx
+        }
+    });
+    send({
+        e: events["get_actions_list"],
+        d: {
+            actions,
+            actions_idx
+        }
+    });
     send({
         e: events["set_players_list"],
         d: players

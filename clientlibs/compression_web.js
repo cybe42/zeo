@@ -34,7 +34,6 @@ async function compress(_data) {
     return new_buffer;
 }
 
-
 async function decompress(buf) {
     if(buf.length === 0) return '';
     const isItCompressed = new Uint8Array(buf)[buf.byteLength - 1];
@@ -48,8 +47,24 @@ async function decompress(buf) {
         return;
     }
 
-    const blob = new Blob([data], {type: 'text/plain; charset=utf-8'});
+    return data;
+}
+
+async function toText(buf) {
+    const blob = new Blob([buf], {type: 'text/plain; charset=utf-8'});
     data = await blob.text();
-    let tryParse = tryparse(data.toString());
-    return tryParse === false ? data : tryParse;
+    return data;
+}
+
+async function decompressText(buf) {
+    const _data = await decompress(buf);
+    const data = toText(_data);
+    return data;
+}
+
+async function decompressJSON(buf) {
+    const _data = await decompress(buf);
+    const data = await toText(_data);
+    let tryParse = tryparse(data);
+    return tryParse;
 }

@@ -1,8 +1,90 @@
 <html>
-    <head>
-        <script type="text/javascript" src="/compression_web.js"></script>
-    </head>
-    <body>
-        <p>ae</p>
-    </body>
+
+<head>
+    <script type="text/javascript" src="/libs/compression_web.js"></script>
+    <script type="text/javascript" src="/libs/clientnetlib.js"></script>
+    <title>zeo</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas style="width:100%;height:100%;" width="2400" height="1200">Browser not supported.</canvas>
+    <script>
+        var c = document.querySelector("canvas");
+        c.width = document.body.clientWidth;
+        c.height = document.body.clientHeight;
+        let players = {};
+
+        
+        var fps = 244;
+        var speed = 40;
+      /*c.addEventListener("mousedown",(e)=>{
+          var rect = c.getBoundingClientRect();
+          var x=event.clientX-rect.left;
+          var y=event.clientY-rect.top;
+          bplayer.x=x;
+          bplayer.y=y;
+          socket.emit('hareket',JSON.stringify(bplayer));
+        });
+        document.addEventListener('keydown', (e)=>{
+          var ishr = false;
+          if(e.code == "KeyW") {
+            bplayer.y-=hiz;
+            ishr=true;
+          }
+          if(e.code == "KeyA") {
+            bplayer.x-=hiz;
+            ishr=true;
+          }
+          if(e.code == "KeyS") {
+            bplayer.y+=hiz;
+            ishr=true;
+          }
+          if(e.code == "KeyD") {
+            bplayer.x+=hiz;
+            ishr=true;
+          }
+          if(e.code == "KeyD") {
+            bplayer.x+=hiz;
+            ishr=true;
+          }
+          if(e.code == "KeyG") {
+            var isim = prompt("ismin ne olsun?",bplayer.name);
+            bplayer.name = isim;
+              socket.emit('isimdegis',isim);
+          }
+          if(e.code == "KeyH") {
+            var renk = prompt("rengin ne olsun?",bplayer.color);
+            byplayer.color = renk;
+              socket.emit('renkdegis',renk);
+          }
+          if(ishr) {
+            socket.emit('hareket',JSON.stringify(bplayer));
+          }
+        });
+        setInterval(()=>{
+          ctx.fillStyle="black";
+          ctx.fillRect(0,0,c.width,c.height);
+          var royuncular = Object.values(oyuncular);
+          for(var z=0;z<royuncular.length;z++) {
+            var royuncu = royuncular[z];
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle="white";
+            ctx.fillText(royuncu.name, royuncu.x+25/5-5, royuncu.y-30);
+            ctx.fillStyle=royuncu.color;
+            ctx.beginPath();
+            ctx.arc(royuncu.x,royuncu.y, 25, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        },1000/fps);*/
+    </script>
+</body>
+
 </html>
