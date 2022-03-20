@@ -1,3 +1,4 @@
+const { isFloat32Array } = require("util/types");
 const WebSocket = require("ws");
 const nanoid = require("nanoid").nanoid;
 const zlib = require("zlib");
@@ -51,7 +52,8 @@ const wss = new WebSocket.Server({ port: 4685 });
 const events_idx = [
     "get_events_list",
     "get_actions_list",
-    "set_players_list",
+    "get_self",
+    "get_players_list",
     "join",
     "leave",
     "action",
@@ -73,75 +75,127 @@ for(let jjj=0;jjj<actions_idx.length;jjj++) {
     actions[actions_idx[jjj]] = jjj;
 }
 
-function broadcast(msg) {
-    wss.clients.forEach(client=>client.send(compress(msg)));
+function broadcast(event, data) {
+    wss.clients.forEach(client=>client.send(compress({
+        e: event,
+        d: data
+    })));
+}
+function broadcast_action(action, data) {
+    broadcast(events["action"], Object.assign(data, {a: action}));
 }
 
 let players = {}
 wss.on("connection", function connection(ws) {
-    function broadcast_out(msg) {
+    function broadcast_out(event, data) {
         wss.clients.forEach(client=>{
             if(client === ws) return;
-            client.send(compress(msg));
+            client.send(compress({
+                e: event,
+                d: data
+            }));
         })
     }
-    function send(msg) { ws.send(compress(msg)); }
+    function broadcast_out_action(action, data) {
+        broadcast_out(events["action"], Object.assign(data, {a: action}));
+    }
+    function send(event, data) {
+        if(event ===undefined) throw new Error("ae");
+        ws.send(compress({
+            e: event,
+            d: data
+        }));
+    }
+    function send_action(action, data) {
+        send(events["action"], Object.assign(data, {a: action}));
+    }
     let id = nanoid();
     players[id] = {
         x: 0,
         y: 0,
         name: "Unknown"+Math.floor(Math.random()*10000000)
     };
-    send({
-        e: events["get_events_list"],
-        d: {
-            events,
-            events_idx
-        }
+    send(events["get_events_list"], {
+        events,
+        events_idx
     });
-    send({
-        e: events["get_actions_list"],
-        d: {
-            actions,
-            actions_idx
-        }
+    send(events["get_actions_list"], {
+        actions,
+        actions_idx
     });
-    send({
-        e: events["set_players_list"],
-        d: players
-    });
-    broadcast_out({
-        e: events["join"],
+    send(events["get_self"], {
+        id,
+        d: players[id]
+    })
+    let _temp_players = Object.assign({}, players);
+    delete _temp_players[id];
+    send(events["get_players_list"], _temp_players);
+    broadcast_out(events["join"], {
+        id,
         d: players[id]
     });
     ws.on("message", function incoming(message) {
-        let tryParse = tryparse(message);
-        if(tryParse === false) return;
-        const packet = Object.assign({
+        let msg;
+        try {
+            msg = decompress(message);
+        } catch(er) {
+            console.log("failed to decompress");
+            return;
+        }
+        if(msg === false) return;
+        console.log(msg);
+        let packet = Object.assign({
+            a: null,
+            d: {}
+        },msg);
+        if(actions_idx[packet.a] == undefined) return;
+        switch(actions_idx[packet.a]) {
+            case "move":
+                packet = Object.assign({
+                    a: null,
+                    d: Object.assign({
+                        x: 0,
+                        y: 0
+                    }, packet.d)
+                }, packet);
+                players[id].x = packet.x;
+                players[id].y = packet.y;
+                const action = actions[packet.a];
+                console.log("Player "+players[id].name+" action: "+action === undefined ? "unknown action" : action);
+                broadcast_out_action(packet.a, {
+                    id,
+                    a: packet.a,
+                    x: packet.d.x,
+                    y: packet.d.y
+                })
+
+                break;
+        }
+        
+        /*
+        console.log(msg);
+        let packet = Object.assign({
             a: actions["move"],
-            x: 0,
-            y: 0
-        },tryParse);
+            d: {
+                x: 0,
+                y: 0
+            }
+        },msg);
+        if(actions_idx[packet.a] == undefined) packet.a = actions["move"];
         players[id].x = packet.x;
         players[id].y = packet.y;
         const action = actions[packet.a];
         console.log("Player "+players[id].name+" action: "+action === undefined ? "unknown action" : action);
-        const out_packet = {
-            e: events["action"],
-            d: {
-                x: packet.x,
-                y: packet.y
-            }
-        };
-
-        broadcast_out(out_packet);
+        broadcast_out_action(packet.a, {
+            id,
+            a: packet.a,
+            x: packet.d.x,
+            y: packet.d.y
+        })*/
     });
     
     ws.on("close", ()=>{
-        broadcast_out({
-            e: events["leave"],
-            d: id
-        });
+        broadcast_out(events["leave"], id);
         delete players[id];
     });
 });
