@@ -4,6 +4,7 @@
 <h5>or if you plan on not running in a Docker environment,</h5>
 <h4>you will need:</h4>
 - Node.js
+<br>
 - NPM
 <br>
 <br>
@@ -34,4 +35,4 @@
 <br>
 ``` $ node webserver.js ```
 
-<h3>However, it is still not recommended you run without Docker as it can pose security risks of the host machine being compromised.</h3>
+<h1>However, it is still recommended you run in a Docker Environment as otherwise it can pose security risks such as the host machine being compromised.</h1>
